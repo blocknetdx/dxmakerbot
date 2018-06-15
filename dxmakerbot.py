@@ -60,7 +60,7 @@ if __name__ == "__main__":
       print (results)
       time.sleep(60)
       if loopcount > maxloopcount:
-        cancelallorders()
+        dxbottools.cancelallorders()
         loopcount = 0
         ordercount = 0
 
