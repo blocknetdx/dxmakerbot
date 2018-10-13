@@ -3,6 +3,9 @@ from bitcoinrpc.authproxy import AuthServiceProxy, JSONRPCException
 import flask.json
 import decimal
 import time
+import calendar
+import dateutil
+from dateutil import parser
 from utils import dxsettings
 
 rpc_connection = AuthServiceProxy("http://%s:%s@127.0.0.1:41414"%(dxsettings.rpcuser, dxsettings.rpcpass))
@@ -20,6 +23,21 @@ def lookup_order_id(orderid, myorders):
   # find my orders, returns order if orderid passed is inside myorders
   return [zz for zz in myorders if zz['id'] == orderid]
 
+def canceloldestorder():
+  myorders = getopenorders()
+  oldestepoch = 3539451969
+  currentepoch = 0
+  epochlist = 0
+  for z in myorders:
+    createdat = z['created_at']
+    currentepoch = getepochtime((z['created_at']))
+    if oldestepoch > currentepoch:
+      oldestorderid = z['id']
+      oldestepoch = currentepoch
+    
+  rpc_connection.dxCancelOrder(oldestorderid)  
+  return oldestorderid, oldestepoch
+
 def cancelallorders():
   # cancel all my orders
   myorders = rpc_connection.dxGetMyOrders()
@@ -28,6 +46,15 @@ def cancelallorders():
     print (results)
   return
 
+def getopenorders():
+    # return open orders
+    myorders = rpc_connection.dxGetMyOrders()
+    return [zz for zz in myorders if zz['status'] == "open"] 
+
+def getepochtime(created):
+    # converts created to epoch
+    return calendar.timegm(dateutil.parser.parse(created).timetuple())
+   
 def showorders():
     print ('### Getting balances >>>')
     mybalances = rpc_connection.dxGetTokenBalances()
@@ -45,4 +72,4 @@ def showorders():
         ismyorder = "True"
       else:
         ismyorder = "False"
-      print (z['status'], z['id'], ismyorder, z['maker'], z['maker_size'], z['taker'],z['taker_size'], float(z['taker_size'])/float(z['maker_size']))
+
