@@ -8,7 +8,7 @@ import dateutil
 from dateutil import parser
 from utils import dxsettings
 
-rpc_connection = AuthServiceProxy("http://%s:%s@127.0.0.1:41414"%(dxsettings.rpcuser, dxsettings.rpcpass))
+rpc_connection = AuthServiceProxy("http://%s:%s@127.0.0.1:%s"%(dxsettings.rpcuser, dxsettings.rpcpassword, dxsettings.rpcport))
 
 class MyJSONEncoder(flask.json.JSONEncoder):
 
@@ -28,22 +28,26 @@ def canceloldestorder():
   oldestepoch = 3539451969
   currentepoch = 0
   epochlist = 0
+  oldestorderid = 0
   for z in myorders:
-    createdat = z['created_at']
-    currentepoch = getepochtime((z['created_at']))
-    if oldestepoch > currentepoch:
-      oldestorderid = z['id']
-      oldestepoch = currentepoch
-    
-  rpc_connection.dxCancelOrder(oldestorderid)  
+    if z['status'] == "open":
+      createdat = z['created_at']
+      currentepoch = getepochtime((z['created_at']))
+      if oldestepoch > currentepoch:
+        oldestorderid = z['id']
+        oldestepoch = currentepoch
+      if oldestorderid != 0:
+        rpc_connection.dxCancelOrder(oldestorderid)  
   return oldestorderid, oldestepoch
 
 def cancelallorders():
-  # cancel all my orders
+  # cancel all my open orders
   myorders = rpc_connection.dxGetMyOrders()
   for z in myorders:
-    results = rpc_connection.dxCancelOrder(z['id'])
-    print (results)
+    if z['status'] == "open":
+      results = rpc_connection.dxCancelOrder(z['id'])
+      time.sleep(3.5)
+      print (results)
   return
 
 def getopenorders():
@@ -72,4 +76,3 @@ def showorders():
         ismyorder = "True"
       else:
         ismyorder = "False"
-
