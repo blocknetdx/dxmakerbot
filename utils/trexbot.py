@@ -17,12 +17,12 @@ def getmarketprice(marketname):
   # get market price
   summary = my_bittrex.get_market_summary(marketname)
   for attempt in range(0,5):
-    while True:
       try:
         lastprice = summary['result'][0]['Last'] 
-      except:
-        print('API call exception/error')
-        time.sleep(1.5)
+      except Exception as e:
+        print('API call attempt# {2} - exception/error {0}, bittrex called failed for {1}'.format(e, marketname, attempt))
+        time.sleep(2.5)
+        lastprice = 0
         continue
       break
   return lastprice
@@ -34,7 +34,10 @@ def getpricedata(maker, taker):
   makerprice = getmarketprice(basemarket)
   takerprice = getmarketprice(takermarket)
 
-  marketprice = makerprice / takerprice
+  try:
+    marketprice = makerprice / takerprice
+  except:
+    marketprice = 0
 
   return marketprice
 
