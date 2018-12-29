@@ -21,6 +21,7 @@ def getmarketprice(marketname):
         lastprice = summary['result'][0]['Last'] 
       except Exception as e:
         print('API call attempt# {2} - exception/error {0}, bittrex called failed for {1}'.format(e, marketname, attempt))
+        print(summary)
         time.sleep(2.5)
         lastprice = 0
         continue
