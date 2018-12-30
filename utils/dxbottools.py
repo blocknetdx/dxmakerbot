@@ -55,6 +55,11 @@ def getopenorders():
     myorders = rpc_connection.dxGetMyOrders()
     return [zz for zz in myorders if zz['status'] == "open"] 
 
+def getopenorderIDs():
+    # return open order IDs
+    myorders = rpc_connection.dxGetMyOrders()
+    return [zz['id'] for zz in myorders if zz['status'] == "open"]
+
 def getepochtime(created):
     # converts created to epoch
     return calendar.timegm(dateutil.parser.parse(created).timetuple())

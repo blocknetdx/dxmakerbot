@@ -70,7 +70,8 @@ if __name__ == "__main__":
       # we have the price per block sellamount * makermarketprice
       buyamount = float(sellamount) * float(makermarketpriceslide)
       buyamountclean = '%.6f' % buyamount
-      if ordercount < maxordercount:
+      currentopenorders = len(dxbottools.getopenorderIDs())
+      if (ordercount < maxordercount) and (currentopenorders < maxordercount):
         results = dxbottools.rpc_connection.dxMakeOrder(BOTsellmarket, str(sellamount), dxsettings.blocktradingaddress, BOTbuymarket, str(buyamountclean), dxsettings.ltctradingaddress, "exact")
         #print (results['id'])
         #print (results['taker_size'])
