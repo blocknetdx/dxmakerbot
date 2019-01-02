@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from bitcoinrpc.authproxy import AuthServiceProxy, JSONRPCException
+from utils.authproxy import AuthServiceProxy, JSONRPCException
 import flask.json
 import decimal
 import time
