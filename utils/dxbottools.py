@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from bitcoinrpc.authproxy import AuthServiceProxy, JSONRPCException
+from utils.authproxy import AuthServiceProxy, JSONRPCException
 import flask.json
 import decimal
 import time
@@ -64,6 +64,24 @@ def getepochtime(created):
     # converts created to epoch
     return calendar.timegm(dateutil.parser.parse(created).timetuple())
    
+def getorderbook(maker, taker):
+    fullbook = rpc_connection.dxGetOrderBook(3, maker, taker)
+    asklist = fullbook['asks']
+    bidlist = fullbook['bids']
+    return (asklist, bidlist)
+
+def getlowprice(orderlist):
+    return min(orderlist, key=lambda x: x[0])
+
+def gethighprice(orderlist):
+    return max(orderlist, key=lambda x: x[0])
+
+
+#dxTakeOrder (id) (address from) (address to) [optional](dryrun)
+def takeorder(id, fromaddr, toaddr):
+    results = rpc_connection.dxTakeOrder(id, fromaddr, toaddr)
+    return results
+
 def showorders():
     print ('### Getting balances >>>')
     mybalances = rpc_connection.dxGetTokenBalances()
