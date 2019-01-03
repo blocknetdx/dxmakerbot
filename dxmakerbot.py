@@ -3,9 +3,17 @@ import time
 import random
 import argparse
 import sys
+import logging
 from utils import dxbottools
 from utils import trexbot
 from utils import dxsettings
+
+
+
+logging.basicConfig(filename='botdebug.log', 
+                    level=logging.INFO, 
+                    format='%(asctime)s %(levelname)s - %(message)s',
+                    datefmt='[%Y-%m-%d:%H:%M:%S]')
 
 # TODO: Implementing CLI based arg's
 parser = argparse.ArgumentParser()
@@ -82,6 +90,7 @@ if __name__ == "__main__":
           results = {}
           results = dxbottools.makeorder(BOTsellmarket, str(sellamount), makeraddress, BOTbuymarket, str(buyamountclean), takeraddress)
           print ('order placed, id: {0} maker_size: {1} taker_size: {2}'.format(results['id'], results['maker_size'],results['taker_size']))
+          logging.info('order placed, id: {0} maker_size: {1} taker_size: {2}'.format(results['id'], results['maker_size'],results['taker_size']))
         except Exception as err:
           print ('error: %s' % err)
         print('completed')
@@ -92,15 +101,18 @@ if __name__ == "__main__":
       print ('sleep')
       time.sleep(3)
       if loopcount > maxloopcount:
-        dxbottools.canceloldestorder()
+        results = dxbottools.canceloldestorder()
+        logging.info('cancelled order1 ID:{0} '.format(results))
+        print ('canceled oldest: {0}'.format(results))
         loopcount = 0
         ordercount = 0
         time.sleep(3.5)
     if blockbalance <= 10:
       loopcount += 1
     if loopcount > maxloopcount:
-      dxbottools.canceloldestorder()
-      print ('canceled oldest')
+      results = dxbottools.canceloldestorder()
+      logging.info('cancelled order1 ID:{0} '.format(results))
+      print ('canceled oldest: {0}'.format(results))
       loopcount = 0
       ordercount = 0
       time.sleep(3.5)
