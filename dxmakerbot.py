@@ -90,10 +90,14 @@ if __name__ == "__main__":
       print ('buyamount {0}'.format(buyamountclean))
       currentopenorders = len(dxbottools.getopenorderIDs())
       if (ordercount < maxordercount) and (currentopenorders < (maxordercount*2)):
-        results = dxbottools.rpc_connection.dxMakeOrder(BOTsellmarket, str(sellamount), makeraddress, BOTbuymarket, str(buyamountclean), takeraddress, "exact")
-        print ('{0} {1} {2}'.format(results['id'], results['taker_size'], results['maker_size']))
+        try:
+          print('placing order...')
+          results = dxbottools.makeorder(BOTsellmarket, str(sellamount), makeraddress, BOTbuymarket, str(buyamountclean), takeraddress)
+          print(results)
+        except Exception as err:
+          print ('error: %s' % err)
       else:
-        print('too many orders open')
+        print('##### too many orders open #####')
       loopcount += 1
       ordercount += 1
       print ('sleep')

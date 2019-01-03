@@ -76,7 +76,14 @@ def getlowprice(orderlist):
 def gethighprice(orderlist):
     return max(orderlist, key=lambda x: x[0])
 
-
+def makeorder(maker, makeramount, makeraddress, taker, takeramount, takeraddress):
+    #
+    results = rpc_connection.dxMakeOrder(maker, makeramount, makeraddress, taker, takeramount, takeraddress, 'exact')
+    if results['id']:
+      return results
+    else:
+      #print (results)
+      raise RuntimeError(results)
 #dxTakeOrder (id) (address from) (address to) [optional](dryrun)
 def takeorder(id, fromaddr, toaddr):
     results = rpc_connection.dxTakeOrder(id, fromaddr, toaddr)
