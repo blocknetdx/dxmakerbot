@@ -95,7 +95,7 @@ if __name__ == "__main__":
           print ('error: %s' % err)
         print('completed')
       else:
-        print('##### too many orders open, open order count: {0}'.format(currentopenorders))
+        print('##### too many orders open, open order count: {0}, loopcount: {1}'.format(currentopenorders, loopcount))
       loopcount += 1
       ordercount += 1
       print ('sleep')
