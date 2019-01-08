@@ -83,8 +83,9 @@ if __name__ == "__main__":
       buyamount = (float(sellamount) * float(makermarketpriceslide)) 
       buyamountclean = '%.6f' % buyamount
       print ('buyamount {0}'.format(buyamountclean))
-      currentopenorders = len(dxbottools.getopenorderIDs())
-      if (ordercount < maxordercount) and (currentopenorders < (maxordercount*2)):
+      currentopenorders = len(dxbottools.getopenordersbymaker(BOTsellmarket))
+      print('currentopenorders: {0} maker: {1}'.format(currentopenorders, BOTsellmarket))
+      if (ordercount < maxordercount) and (currentopenorders < (maxordercount)):
         try:
           print('placing order...')
           results = {}

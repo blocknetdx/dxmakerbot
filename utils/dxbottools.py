@@ -50,6 +50,11 @@ def cancelallorders():
       print (results)
   return
 
+def getopenordersbymaker(maker):
+    # return orders open w/ maker 
+    myorders = rpc_connection.dxGetMyOrders()
+    return [zz for zz in myorders if (zz['status'] == "open") and (zz['maker'] == maker)]
+
 def getopenorders():
     # return open orders
     myorders = rpc_connection.dxGetMyOrders()
