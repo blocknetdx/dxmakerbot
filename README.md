@@ -7,3 +7,6 @@
 
 # Configuration
 - Editing utils/dxsettings.py with block and ltc trading addresses, and blocknetdx RPC creds
+
+# Example
+```dxmakerbot.py --maker SYS --taker LTC --sellmin 5 --sellmax 15 --slidemin 1.00111 --slidemax 1.1111```
