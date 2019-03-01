@@ -22,6 +22,7 @@ parser.add_argument('--taker', help='taker chain', default='LTC')
 parser.add_argument('--slidemin', help='price slide adjustment', default=0.999887)
 parser.add_argument('--slidemax', help='price slide adjustment', default=1.015999)
 parser.add_argument('--cancelall', help='cancel all orders and exist', action="store_true")
+parser.add_argument('--cancelmarket', help='cancel all orders in a given market')
 parser.add_argument('--sellmin', help='maker sell min order size', default=0.001)
 parser.add_argument('--sellmax', help='maker sell max order size', default=1)
 args = parser.parse_args()
@@ -35,6 +36,10 @@ if args.cancelall:
   results = dxbottools.cancelallorders()
   print (results)
   sys.exit(0)
+elif args.cancelmarket:
+  results = dxbottools.cancelallordersbymarket(args.cancelmarket.upper())
+  sys.exit(0)
+
 
 time.sleep(1.5) # wait for cancel orders
 print ('start bot')
@@ -42,9 +47,9 @@ print (BOTsellmarket, BOTbuymarket)
 print (' - checking trex api ...')
 print ('makers market price: %s' %(trexbot.getpricedata(BOTsellmarket, BOTbuymarket)))
 # init values
-maxloopcount = 30 # 1 loop per minute, then cancel all orders, start over
+maxloopcount = 15 # 1 loop per minute, then cancel all orders, start over
 loopcount = 0
-maxordercount = 10
+maxordercount = 15
 ordercount = 0
 
 # order loop
@@ -102,7 +107,7 @@ if __name__ == "__main__":
       print ('sleep')
       time.sleep(3)
       if loopcount > maxloopcount:
-        results = dxbottools.canceloldestorder()
+        results = dxbottools.canceloldestorder(BOTsellmarket)
         logging.info('cancelled order1 ID:{0} '.format(results))
         print ('canceled oldest: {0}'.format(results))
         loopcount = 0
@@ -111,14 +116,13 @@ if __name__ == "__main__":
     if blockbalance <= 10:
       loopcount += 1
     if loopcount > maxloopcount:
-      results = dxbottools.canceloldestorder()
+      results = dxbottools.canceloldestorder(BOTsellmarket)
       logging.info('cancelled order1 ID:{0} '.format(results))
       print ('canceled oldest: {0}'.format(results))
       loopcount = 0
       ordercount = 0
       time.sleep(3.5)
       print ('canceled oldest sleeping...')
-      time.sleep(120)
 
 
 # vim: tabstop=2 expandtab shiftwidth=2 softtabstop=2
