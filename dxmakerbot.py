@@ -23,6 +23,8 @@ parser.add_argument('--cancelmarket', help='cancel all orders in a given market'
 parser.add_argument('--sellmin', help='maker sell min order size', default=0.001)
 parser.add_argument('--sellmax', help='maker sell max order size', default=1)
 parser.add_argument('--delay', help='sleep delay value', default=3)
+parser.add_argument('--maxloop', help='max number of order loops', default=7)
+parser.add_argument('--maxopen', help='max number of open orders', default=5)
 args = parser.parse_args()
 
 BOTsellmarket = args.maker.upper()
@@ -30,6 +32,10 @@ BOTbuymarket = args.taker.upper()
 BOTslidemin = float(args.slidemin)
 BOTslidemax = float(args.slidemax)
 BOTdelay = args.delay
+maxloopcount = args.maxloop
+maxordercount = args.maxopen
+loopcount = 0
+ordercount = 0
 
 if args.cancelall:
     results = dxbottools.cancelallorders()
@@ -49,11 +55,6 @@ if marketprice == 0:
     sys.exit(1)
 
 print('>>>> makers market price: %s' %(trexbot.getpricedata(BOTsellmarket, BOTbuymarket)))
-# init values
-maxloopcount = 15 # max number of cycles before a cancel order is issued
-loopcount = 0
-maxordercount = 15 # max number of open orders
-ordercount = 0
 
 # order loop
 makeraddress = dxsettings.tradingaddress[BOTsellmarket]
