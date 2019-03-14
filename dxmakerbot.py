@@ -45,16 +45,16 @@ elif args.cancelmarket:
     results = dxbottools.cancelallordersbymarket(args.cancelmarket.upper())
     sys.exit(0)
 
-print('>>>> start bot')
+print('>>>> Start maker bot')
 time.sleep(BOTdelay) # wait for cancel orders
 print(BOTsellmarket, BOTbuymarket)
-print('>>>> Checking Pricing Information')
+print('>>>> Checking pricing information')
 marketprice = trexbot.getpricedata(BOTsellmarket, BOTbuymarket)
 if marketprice == 0:
-    print('#### pricing not availabe')
+    print('#### Pricing not availabe')
     sys.exit(1)
 
-print('>>>> makers market price: %s' %(trexbot.getpricedata(BOTsellmarket, BOTbuymarket)))
+print('>>>> Makers market price: %s' %(trexbot.getpricedata(BOTsellmarket, BOTbuymarket)))
 
 # order loop
 makeraddress = dxsettings.tradingaddress[BOTsellmarket]
@@ -64,13 +64,13 @@ if __name__ == "__main__":
     while 1:  # loop forever
         mybalances = dxbottools.rpc_connection.dxGetTokenBalances()
         blockbalance = float(mybalances[BOTsellmarket])
-        print('>>>> pre-start balances: %s' % blockbalance)
+        print('>>>> Pre-start balances: %s' % blockbalance)
         while blockbalance > 0:
             makermarketprice = trexbot.getpricedata(BOTsellmarket, BOTbuymarket)
-            print('>>>> marketprice: {0}'.format(makermarketprice))
+            print('>>>> Market price: {0}'.format(makermarketprice))
             mybalances = dxbottools.rpc_connection.dxGetTokenBalances()
             blockbalance = float(mybalances[BOTsellmarket])
-            print('>>>> Balances', blockbalance)
+            print('>>>> Balances: ', blockbalance)
             #generate random sell amount of block
             sellamount = random.uniform(float(args.sellmin), float(args.sellmax))
             sellamount = '%.6f' % sellamount
@@ -89,24 +89,24 @@ if __name__ == "__main__":
             print('>>>> currentopenorders: {0} maker: {1}'.format(currentopenorders, BOTsellmarket))
             if (ordercount < maxordercount) and (currentopenorders < (maxordercount)):
                 try:
-                    print('>>>> placing order...')
+                    print('>>>> Placing order...')
                     results = {}
                     results = dxbottools.makeorder(BOTsellmarket, str(sellamount), makeraddress, BOTbuymarket, str(buyamountclean), takeraddress)
-                    print('>>>> order placed, id: {0} maker_size: {1} taker_size: {2}'.format(results['id'], results['maker_size'], results['taker_size']))
-                    logging.info('order placed, id: {0} maker_size: {1} taker_size: {2}'.format(results['id'], results['maker_size'], results['taker_size']))
+                    print('>>>> Order placed, id: {0} maker_size: {1} taker_size: {2}'.format(results['id'], results['maker_size'], results['taker_size']))
+                    logging.info('Order placed, id: {0} maker_size: {1} taker_size: {2}'.format(results['id'], results['maker_size'], results['taker_size']))
                 except Exception as err:
-                    print('error: %s' % err)
-                    print('completed')
+                    print('ERROR: %s' % err)
+                    print('Completed')
             else:
-                print('##### too many orders open, open order count: {0}, loopcount: {1}'.format(currentopenorders, loopcount))
+                print('##### Too many orders open - open order count: {0}, loopcount: {1}'.format(currentopenorders, loopcount))
             loopcount += 1
             ordercount += 1
             print('sleep')
             time.sleep(BOTdelay)
             if loopcount > maxloopcount:
                 results = dxbottools.canceloldestorder(BOTsellmarket)
-                logging.info('cancelled order1 ID:{0} '.format(results))
-                print('>>>> canceled oldest: {0}'.format(results))
+                logging.info('Canceled order ID: {0} '.format(results))
+                print('>>>> Canceled oldest: {0}'.format(results))
                 loopcount = 0
                 ordercount = 0
                 time.sleep(BOTdelay)
@@ -114,12 +114,12 @@ if __name__ == "__main__":
             loopcount += 1
         if loopcount > maxloopcount:
             results = dxbottools.canceloldestorder(BOTsellmarket)
-            logging.info('cancelled order1 ID:{0} '.format(results))
-            print('>>>> canceled oldest: {0}'.format(results))
+            logging.info('Canceled order ID: {0} '.format(results))
+            print('>>>> Canceled oldest: {0}'.format(results))
             loopcount = 0
             ordercount = 0
             time.sleep(BOTdelay)
-            print('>>>> canceled oldest sleeping...')
+            print('>>>> Canceled oldest sleeping...')
 
 
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
