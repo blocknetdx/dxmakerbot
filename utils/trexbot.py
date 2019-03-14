@@ -7,16 +7,14 @@ __version__ = "0.0.1"
 __maintainer__ = "atcsecure"
 __status__ = "Alpha"
 
-import json
 import time
 import requests
 from bittrex.bittrex import Bittrex, API_V2_0
+from utils import dxsettings
 
 my_bittrex = Bittrex(None, None)
-cryptobridgeURL = 'https://api.crypto-bridge.org/api/v1/ticker'
-cryptobridgeURL = ''
 
-def getmarketprice(marketname):
+def getmarketprice(marketname, BOTusecb):
   # get market price
   markets = []
   markets = marketname.split('-')
@@ -24,8 +22,8 @@ def getmarketprice(marketname):
   if markets[1] == 'BTC':
     marketname = '{0}-{1}'.format(markets[1], markets[0])
 
-  if cryptobridgeURL:
-    resp = requests.get(url=cryptobridgeURL)
+  if BOTusecb and dxsettings.cryptobridgeURL:
+    resp = requests.get(url=dxsettings.cryptobridgeURL)
     data = resp.json()
     cbmarketname = '{0}_{1}'.format(markets[1], markets[0])
     print ('>>>> Looking up CryptoBridge market: {}'.format(cbmarketname))
@@ -49,20 +47,20 @@ def getmarketprice(marketname):
       break
   return float(lastprice)
 
-def getpricedata(maker, taker):
+def getpricedata(maker, taker, BOTusecb):
   basemarket = ('BTC-{0}'.format(maker))
   takermarket = ('BTC-{0}'.format(taker))
   print ('>>>> Maker: {0}, Taker: {1}'.format(maker,taker))
   print ('>>>> Base market: %s' % basemarket)
   if maker == 'BTC':
-    marketprice = 1/getmarketprice(takermarket)
+    marketprice = 1/getmarketprice(takermarket, BOTusecb)
     return marketprice
-  makerprice = getmarketprice(basemarket)
+  makerprice = getmarketprice(basemarket, BOTusecb)
   print ('>>>> Taker market: %s' % takermarket)
   if taker == 'BTC':
     marketprice = makerprice
   else:
-    takerprice = getmarketprice(takermarket)
+    takerprice = getmarketprice(takermarket, BOTusecb)
     try:
       marketprice = makerprice / takerprice
     except:

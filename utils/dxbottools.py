@@ -72,7 +72,7 @@ def getopenorders():
     myorders = rpc_connection.dxGetMyOrders()
     return [zz for zz in myorders if zz['status'] == "open"] 
 
-def getopenorderids():
+def getopenorder_ids():
     # return open order IDs
     myorders = rpc_connection.dxGetMyOrders()
     return [zz['id'] for zz in myorders if zz['status'] == "open"]
