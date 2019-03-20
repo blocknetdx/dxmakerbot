@@ -23,9 +23,9 @@ def lookup_order_id(orderid, myorders):
   # find my orders, returns order if orderid passed is inside myorders
   return [zz for zz in myorders if zz['id'] == orderid]
 
-def canceloldestorder(maker):
-  # myorders = getopenorders()
-  myorders = getopenordersbymaker(maker)
+
+def canceloldestorder(maker, taker):
+  myorders = getopenordersbymarket(maker, taker)
   oldestepoch = 3539451969
   currentepoch = 0
   epochlist = 0
@@ -51,16 +51,20 @@ def cancelallorders():
       print (results)
   return
 
-def cancelallordersbymarket(maker):
+def cancelallordersbymarket(maker, taker):
   # cancel all my open orders
-  # myorders = rpc_connection.dxGetMyOrders()
-  myorders = getopenordersbymaker(maker)
+  myorders = getopenordersbymarket(maker, taker)
   for z in myorders:
     if z['status'] == "open":
       results = rpc_connection.dxCancelOrder(z['id'])
       time.sleep(3.5)
       print (results)
   return
+
+def getopenordersbymarket(maker, taker):
+    # returns open orders by market
+    myorders = rpc_connection.dxGetMyOrders()
+    return [zz for zz in myorders if (zz['status'] == "open") and (zz['maker'] == maker) and (zz['taker'] == taker)]
 
 def getopenordersbymaker(maker):
     # return orders open w/ maker 

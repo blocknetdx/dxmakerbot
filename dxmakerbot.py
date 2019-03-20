@@ -46,7 +46,7 @@ if args.cancelall:
     print(results)
     sys.exit(0)
 elif args.cancelmarket:
-    results = dxbottools.cancelallordersbymarket(args.cancelmarket.upper())
+    results = dxbottools.cancelallordersbymarket(args.cancelmarket.upper(), BOTbuymarket)
     sys.exit(0)
 
 print('>>>> Start maker bot')
@@ -78,7 +78,6 @@ if __name__ == "__main__":
             #generate random sell amount
             sellamount = random.uniform(float(args.sellmin), float(args.sellmax))
             sellamount = '%.6f' % sellamount
-
             #adjust price based on slide value
             print('>>>> makerprice: {}'.format(makermarketprice))
             print('>>>> slidemin: {}'.format(BOTslidemin))
@@ -89,8 +88,8 @@ if __name__ == "__main__":
             buyamount = (float(sellamount) * float(makermarketpriceslide)) 
             buyamountclean = '%.6f' % buyamount
             print('>>>> buyamount {}'.format(buyamountclean))
-            currentopenorders = len(dxbottools.getopenordersbymaker(BOTsellmarket))
-            print('>>>> currentopenorders: {} maker: {}'.format(currentopenorders, BOTsellmarket))
+            currentopenorders = len(dxbottools.getopenordersbymarket(BOTsellmarket,BOTbuymarket))
+            print('>>>> currentopenorders: {} maker: {} taker: {}'.format(currentopenorders, BOTsellmarket, BOTbuymarket))
             if (ordercount < maxordercount) and (currentopenorders < (maxordercount)):
                 try:
                     print('>>>> Placing order...')
@@ -108,7 +107,7 @@ if __name__ == "__main__":
             print('sleep')
             time.sleep(BOTdelay)
             if loopcount > maxloopcount:
-                results = dxbottools.canceloldestorder(BOTsellmarket)
+                results = dxbottools.canceloldestorder(BOTsellmarket, BOTbuymarket)
                 logging.info('Canceled order ID: {} '.format(results))
                 print('>>>> Canceled oldest: {}'.format(results))
                 loopcount = 0
@@ -117,7 +116,7 @@ if __name__ == "__main__":
         if makerbalance <= BOTminbalance:
             loopcount += 1
         if loopcount > maxloopcount:
-            results = dxbottools.canceloldestorder(BOTsellmarket)
+            results = dxbottools.canceloldestorder(BOTsellmarket, BOTbuymarket)
             logging.info('Canceled order ID: {} '.format(results))
             print('>>>> Canceled oldest: {}'.format(results))
             loopcount = 0
