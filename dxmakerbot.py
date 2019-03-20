@@ -69,8 +69,13 @@ if marketprice == 0:
 print('>>>> Makers market price: {}'.format(pricebot.getpricedata(BOTsellmarket, BOTbuymarket, BOTuse)))
 
 # order loop
-makeraddress = dxsettings.tradingaddress[BOTsellmarket]
-takeraddress = dxsettings.tradingaddress[BOTbuymarket]
+try:
+    makeraddress = dxsettings.tradingaddress[BOTsellmarket]
+    takeraddress = dxsettings.tradingaddress[BOTbuymarket]
+except KeyError as e:
+    print('error: {}'.format(e))
+    print('check dxsettings.py for address entry')
+    sys.exit(1)
 
 if __name__ == "__main__":
     while 1:  # loop forever
