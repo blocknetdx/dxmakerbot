@@ -5,7 +5,7 @@ import argparse
 import sys
 import logging
 from utils import dxbottools
-from utils import trexbot
+from utils import getpricing as pricebot
 from utils import dxsettings
 
 logging.basicConfig(filename='botdebug.log',
@@ -27,6 +27,7 @@ parser.add_argument('--maxloop', help='max number of order loops', default=7)
 parser.add_argument('--maxopen', help='max number of open orders', default=5)
 parser.add_argument('--minbalance', help='minbalance value for loop', default=10)
 parser.add_argument('--usecb', help='enable cryptobridge pricing', action='store_true')
+parser.add_argument('--usecg', help='enable coingecko pricing', action='store_true')
 args = parser.parse_args()
 
 BOTsellmarket = args.maker.upper()
@@ -34,12 +35,19 @@ BOTbuymarket = args.taker.upper()
 BOTslidemin = float(args.slidemin)
 BOTslidemax = float(args.slidemax)
 BOTdelay = args.delay
-BOTusecb = args.usecb
+
 BOTminbalance = args.minbalance
 maxloopcount = args.maxloop
 maxordercount = args.maxopen
 loopcount = 0
 ordercount = 0
+
+if args.usecg:
+    BOTuse = 'cg'
+elif args.usecb:
+    BOTuse = 'cb'
+else:
+    BOTuse = 'bt'
 
 if args.cancelall:
     results = dxbottools.cancelallorders()
@@ -53,12 +61,12 @@ print('>>>> Start maker bot')
 time.sleep(BOTdelay) # wait for cancel orders
 print(BOTsellmarket, BOTbuymarket)
 print('>>>> Checking pricing information')
-marketprice = trexbot.getpricedata(BOTsellmarket, BOTbuymarket, BOTusecb)
+marketprice = pricebot.getpricedata(BOTsellmarket, BOTbuymarket, BOTuse)
 if marketprice == 0:
     print('#### Pricing not availabe')
     sys.exit(1)
 
-print('>>>> Makers market price: {}'.format(trexbot.getpricedata(BOTsellmarket, BOTbuymarket, BOTusecb)))
+print('>>>> Makers market price: {}'.format(pricebot.getpricedata(BOTsellmarket, BOTbuymarket, BOTuse)))
 
 # order loop
 makeraddress = dxsettings.tradingaddress[BOTsellmarket]
@@ -70,7 +78,7 @@ if __name__ == "__main__":
         makerbalance = float(mybalances[BOTsellmarket])
         print('>>>> Pre-start balances: {}'.format(makerbalance))
         while makerbalance > 0:
-            makermarketprice = trexbot.getpricedata(BOTsellmarket, BOTbuymarket, BOTusecb)
+            makermarketprice = pricebot.getpricedata(BOTsellmarket, BOTbuymarket, BOTuse)
             print('>>>> Market price: {}'.format(makermarketprice))
             mybalances = dxbottools.rpc_connection.dxGetTokenBalances()
             makerbalance = float(mybalances[BOTsellmarket])
