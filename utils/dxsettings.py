@@ -1,7 +1,10 @@
 tradingaddress = {}
-tradingaddress['SYS'] = "_address_here_"
-tradingaddress['LTC'] = "_address_here_"
-tradingaddress['BLOCK'] = "_address_here_"
-rpcport = 41414
-rpcuser = '<rpcuser>'
-rpcpassword = '<rpcpass>'
+tradingaddress['SYS'] = "_address_"
+tradingaddress['LTC'] = "_address_"
+tradingaddress['BLOCK'] = "_address_" 
+tradingaddress['MUE'] = "_address_"
+rpcport=41414
+rpcuser="_rpcuser_"
+rpcpassword="_rpcpassword_"
+cryptobridgeURL = 'https://api.crypto-bridge.org/api/v1/ticker'
+
