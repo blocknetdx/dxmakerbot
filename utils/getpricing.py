@@ -1,19 +1,50 @@
 #!/usr/bin/env python3
-__author__ = "atcsecure"
-__copyright__ = "All rights reserved"
-__credits__ = ["atcsecure"]
-__license__ = "GPL"
-__version__ = "0.0.1"
-__maintainer__ = "atcsecure"
-__status__ = "Alpha"
+__author__ = 'atcsecure'
+__copyright__ = 'All rights reserved'
+__credits__ = ['atcsecure']
+__license__ = 'GPL'
+__version__ = '0.0.1'
+__maintainer__ = 'atcsecure'
+__status__ = 'Alpha'
 
 import time
+import sys
 import requests
 from utils import coingecko
 from bittrex.bittrex import Bittrex, API_V2_0
+from utils import custompricing
 from utils import dxsettings
 
 my_bittrex = Bittrex(None, None)
+
+def getcustommarketpricing(maker, taker):
+  maker = maker.upper()
+  taker = taker.upper()
+  assets = [maker,taker]
+  makerprice = 0
+  takerprice = 0
+  print('>>>> Looking up custom pricing: {}-{}'.format(maker,taker))
+  for asset in assets:
+    assetprice = 0
+    try:
+      endpoint = dxsettings.apiendpoint[asset]
+    except:
+      print('ERROR: Check dxsettings.py for custom price URL: {}'.format(asset))
+      sys.exit(1)
+    if asset == 'BTC':
+      assetprice = 1
+    else:
+      assetprice = custompricing.getprice(asset,endpoint)
+    print('>>>> {} price: {}'.format(asset,assetprice))
+    if asset == maker:
+      makerprice = float(assetprice)
+    else:
+      takerprice = float(assetprice)
+  lastprice = makerprice / takerprice
+  print('>>>> {}-{} market price: {}'.format(maker,taker,lastprice))
+  return lastprice
+
+
 
 
 def getmarketprice(marketname, BOTuse):
@@ -22,39 +53,36 @@ def getmarketprice(marketname, BOTuse):
   markets = marketname.split('-')
   lastprice = 0
   if markets[1] == 'BTC':
-    marketname = '{0}-{1}'.format(markets[1], markets[0])
+    marketname = '{}-{}'.format(markets[1], markets[0])
 
   if BOTuse == 'cg':
-    print ('using coingeckoapi')
+    print('>>>> Looking up CoinGecko pricing: {}'.format(markets[1]))
     cg = coingecko.CoinGeckoAPI()
     cg_coin_list = cg.get_coins_list()
-    # cg uses id's, need to lookup id for market
-    print ('looking for {}'.format(markets[1]))
+    # CoinGecko uses IDs, need to lookup ID for market
     for coin in cg_coin_list:
       if coin['symbol'] == markets[1].lower():
         coin_id = coin['id']
-        print ('found coin id: {}'.format(coin_id))
+        print('Found {} ID: {}'.format(markets[1],coin_id))
         currentprice = cg.get_price(ids=coin_id, vs_currencies=markets[0])
         lastprice = currentprice[coin_id]
-        #print (markets[1])
-        #print (markets[0])
         vsmarket = markets[0].lower()
-        print ('lastprice: {}'.format(lastprice[vsmarket]))
+        print('Last price: {}'.format(lastprice[vsmarket]))
         lastprice = lastprice[vsmarket]
         break
 
   if BOTuse == 'cb' and dxsettings.cryptobridgeURL:
     resp = requests.get(url=dxsettings.cryptobridgeURL)
     data = resp.json()
-    cbmarketname = '{0}_{1}'.format(markets[1], markets[0])
-    print ('>>>> Looking up CryptoBridge market: {}'.format(cbmarketname))
+    cbmarketname = '{}_{}'.format(markets[1], markets[0])
+    print('>>>> Looking up CryptoBridge market: {}'.format(cbmarketname))
     for z in data:
       if (z['id']) == cbmarketname:
         lastprice = z['last']
-        print ('>>>> Found market: {0}, Price: {1}'.format(cbmarketname,lastprice))
+        print('>>>> Found market: {}, Price: {}'.format(cbmarketname,lastprice))
 
   if not lastprice:
-    print ('>>>> Looking up Bittrex market: {}'.format(marketname))
+    print('>>>> Looking up Bittrex market: {}'.format(marketname))
     for attempt in range(0,5):
       summary = my_bittrex.get_market_summary(marketname)
       try:
@@ -69,15 +97,18 @@ def getmarketprice(marketname, BOTuse):
   return float(lastprice)
 
 def getpricedata(maker, taker, BOTuse):
-  basemarket = ('BTC-{0}'.format(maker))
-  takermarket = ('BTC-{0}'.format(taker))
-  print ('>>>> Maker: {0}, Taker: {1}'.format(maker,taker))
-  print ('>>>> Base market: %s' % basemarket)
+  basemarket = ('BTC-{}'.format(maker))
+  takermarket = ('BTC-{}'.format(taker))
+  print('>>>> Maker: {}, Taker: {}'.format(maker,taker))
+  if BOTuse == 'custom':
+    marketprice = getcustommarketpricing(maker, taker) 
+    return marketprice
+  print('>>>> Base market: %s' % basemarket)
   if maker == 'BTC':
     marketprice = 1/getmarketprice(takermarket, BOTuse)
     return marketprice
   makerprice = getmarketprice(basemarket, BOTuse)
-  print ('>>>> Taker market: %s' % takermarket)
+  print('>>>> Taker market: %s' % takermarket)
   if taker == 'BTC':
     marketprice = makerprice
   else:
@@ -91,4 +122,3 @@ def getpricedata(maker, taker, BOTuse):
 
 
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
-

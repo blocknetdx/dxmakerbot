@@ -32,7 +32,7 @@ class CoinGeckoAPI:
         if params:
             api_url += '?'
             for key, value in params.items():
-                api_url += "{0}={1}&".format(key, value)
+                api_url += '{0}={1}&'.format(key, value)
             api_url = api_url[:-1]
         return api_url
 
