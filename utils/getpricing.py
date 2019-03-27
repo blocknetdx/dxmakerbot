@@ -17,35 +17,6 @@ from utils import dxsettings
 
 my_bittrex = Bittrex(None, None)
 
-def getcustommarketpricing(maker, taker):
-  maker = maker.upper()
-  taker = taker.upper()
-  assets = [maker,taker]
-  makerprice = 0
-  takerprice = 0
-  print('>>>> Looking up custom pricing: {}-{}'.format(maker,taker))
-  for asset in assets:
-    assetprice = 0
-    try:
-      endpoint = dxsettings.apiendpoint[asset]
-    except:
-      print('ERROR: Check dxsettings.py for custom price URL: {}'.format(asset))
-      sys.exit(1)
-    if asset == 'BTC':
-      assetprice = 1
-    else:
-      assetprice = custompricing.getprice(asset,endpoint)
-    print('>>>> {} price: {}'.format(asset,assetprice))
-    if asset == maker:
-      makerprice = float(assetprice)
-    else:
-      takerprice = float(assetprice)
-  lastprice = makerprice / takerprice
-  print('>>>> {}-{} market price: {}'.format(maker,taker,lastprice))
-  return lastprice
-
-
-
 
 def getmarketprice(marketname, BOTuse):
   # get market price
@@ -54,6 +25,20 @@ def getmarketprice(marketname, BOTuse):
   lastprice = 0
   if markets[1] == 'BTC':
     marketname = '{}-{}'.format(markets[1], markets[0])
+
+  if BOTuse == 'custom':
+    print('### custom ####')
+    asset = markets[1]
+    print('>>>> Looking up custom pricing: {}'.format(marketname))
+    # lets get maker price
+    try:
+        endpoint = dxsettings.apiendpoint[asset]
+        lastprice = custompricing.getprice(asset,endpoint)
+    except Exception as e:
+        print('ERROR: {}'.format(e))
+        print('program aborted...')
+        sys.exit(1)
+    print(lastprice)
 
   if BOTuse == 'cg':
     print('>>>> Looking up CoinGecko pricing: {}'.format(markets[1]))
@@ -96,19 +81,17 @@ def getmarketprice(marketname, BOTuse):
       break
   return float(lastprice)
 
+
 def getpricedata(maker, taker, BOTuse):
   basemarket = ('BTC-{}'.format(maker))
   takermarket = ('BTC-{}'.format(taker))
   print('>>>> Maker: {}, Taker: {}'.format(maker,taker))
-  if BOTuse == 'custom':
-    marketprice = getcustommarketpricing(maker, taker) 
-    return marketprice
-  print('>>>> Base market: %s' % basemarket)
+  print('>>>> Base market: {}'.format(basemarket))
   if maker == 'BTC':
     marketprice = 1/getmarketprice(takermarket, BOTuse)
     return marketprice
   makerprice = getmarketprice(basemarket, BOTuse)
-  print('>>>> Taker market: %s' % takermarket)
+  print('>>>> Taker market: {}'.format(takermarket))
   if taker == 'BTC':
     marketprice = makerprice
   else:

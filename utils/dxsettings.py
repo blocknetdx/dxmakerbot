@@ -4,6 +4,7 @@ tradingaddress['SYS'] = '_address_'
 tradingaddress['LTC'] = '_address_'
 tradingaddress['BLOCK'] = '_address_' 
 tradingaddress['MUE'] = '_address_'
+tradingaddress['BTC'] = '_address_'
 rpcport = 41414
 rpcuser = '_rpcuser_'
 rpcpassword = '_rpcpassword_'
@@ -31,3 +32,4 @@ customrequest1 = ['LTC']
 customrequest2 = ['_asset1_', '_asset2_']
 customrequest3 = ['_asset3_', '_asset4_']
 
+# vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

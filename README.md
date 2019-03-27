@@ -3,6 +3,7 @@ A market making bot for Blocknet's decentralized exchange protocol, built with t
 
 
 
+
 ## Prerequisites
 1. [Latest Blocknet wallet installed](https://github.com/BlocknetDX/blocknet/releases/latest).
 1. The wallet of any assets you will be trading. See list of [compatible assets](https://docs.blocknet.co/protocol/xbridge/compatibility/#supported-digital-assets).
@@ -74,7 +75,12 @@ rpcpassword = 'blocknetbot123'
 
 ### Maker Bot
 Use the following command format to start the bot:
-* At the moment this bot only supports pricing from Bittrex markets for Blocknet [compatible assets](https://docs.blocknet.co/protocol/xbridge/compatibility/#supported-digital-assets).
+* Pricing is based off BTC-XXX market pairs, for example: If you run --maker LTC --maker DASH, the bot pulls the price for BTC-LTC and BTC-DASH and automatically calculates LTC-DASH price
+* This works for all supported pricing sources (bittrex, coingecko, cryptobridge, and custom)
+* Bittrex is default pricing source
+* Forcryptobridge: --usecb
+* For coingecko: --usecg
+* For custom pricing: --usecustom
 
 ```
 dxmakerbot.py --maker [] --taker [] --sellmin [] --sellmax [] --slidemin [] --slidemax []
@@ -86,15 +92,16 @@ dxmakerbot.py --maker [] --taker [] --sellmin [] --sellmax [] --slidemin [] --sl
 * `--sellmax` = maximum quantity to sell per order
 * `--slidemin` = minimum order price multipler (market price * slidemin = min price)
 * `--slidemax` = maximum order price multipler (market price * slidemin = max price)
+* '--delay'
+* '--maxloop'
+* '--maxopen'
+* '--minbalance'
+* '--usecb'
+* '--usecg'
+* '--usecustom'
 
 Example command:
 
 ```
 dxmakerbot.py --maker SYS --taker LTC --sellmin 5 --sellmax 15 --slidemin 1.00111 --slidemax 1.1111
 ```
-
-### Taker Bot
-
-*Guide coming...*
-
-
