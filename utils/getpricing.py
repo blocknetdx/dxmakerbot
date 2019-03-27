@@ -28,13 +28,19 @@ def getcustommarketpricing(maker, taker):
     assetprice = 0
     try:
       endpoint = dxsettings.apiendpoint[asset]
-    except:
-      print('ERROR: Check dxsettings.py for custom price URL: {}'.format(asset))
+    except Exception as e:
+      print('ERROR: {}'.format(e))
+      print('Check dxsettings.py for custom price URL: {}'.format(asset))
       sys.exit(1)
     if asset == 'BTC':
       assetprice = 1
     else:
-      assetprice = custompricing.getprice(asset,endpoint)
+      try:
+        assetprice = custompricing.getprice(asset,endpoint)
+      except Exception as e:
+        print('ERROR: {}'.format(e))
+        print('Unable to use custom pricing, program aborted...')
+        sys.exit(1)
     print('>>>> {} price: {}'.format(asset,assetprice))
     if asset == maker:
       makerprice = float(assetprice)
@@ -103,12 +109,12 @@ def getpricedata(maker, taker, BOTuse):
   if BOTuse == 'custom':
     marketprice = getcustommarketpricing(maker, taker) 
     return marketprice
-  print('>>>> Base market: %s' % basemarket)
+  print('>>>> Base market: {}'.format(basemarket))
   if maker == 'BTC':
     marketprice = 1/getmarketprice(takermarket, BOTuse)
     return marketprice
   makerprice = getmarketprice(basemarket, BOTuse)
-  print('>>>> Taker market: %s' % takermarket)
+  print('>>>> Taker market: {}'.format(takermarket))
   if taker == 'BTC':
     marketprice = makerprice
   else:
