@@ -23,9 +23,9 @@ def lookup_order_id(orderid, myorders):
   # find my orders, returns order if orderid passed is inside myorders
   return [zz for zz in myorders if zz['id'] == orderid]
 
-
-def canceloldestorder(maker, taker):
-  myorders = getopenordersbymarket(maker, taker)
+def canceloldestorder(maker):
+  # myorders = getopenorders()
+  myorders = getopenordersbymaker(maker)
   oldestepoch = 3539451969
   currentepoch = 0
   epochlist = 0
@@ -51,20 +51,16 @@ def cancelallorders():
       print (results)
   return
 
-def cancelallordersbymarket(maker, taker):
+def cancelallordersbymarket(maker):
   # cancel all my open orders
-  myorders = getopenordersbymarket(maker, taker)
+  # myorders = rpc_connection.dxGetMyOrders()
+  myorders = getopenordersbymaker(maker)
   for z in myorders:
     if z['status'] == "open":
       results = rpc_connection.dxCancelOrder(z['id'])
       time.sleep(3.5)
       print (results)
   return
-
-def getopenordersbymarket(maker, taker):
-    # returns open orders by market
-    myorders = rpc_connection.dxGetMyOrders()
-    return [zz for zz in myorders if (zz['status'] == "open") and (zz['maker'] == maker) and (zz['taker'] == taker)]
 
 def getopenordersbymaker(maker):
     # return orders open w/ maker 
@@ -91,14 +87,16 @@ def getorderbook(maker, taker):
     bidlist = fullbook['bids']
     return (asklist, bidlist)
 
+def takeElem(elem):
+    return float(elem[0])
+
 def getlowprice(orderlist):
-    return min(orderlist, key=lambda x: x[0])
+    return sorted(orderlist, key=takeElem)[0]
 
 def gethighprice(orderlist):
-    return max(orderlist, key=lambda x: x[0])
+    return sorted(orderlist, key=takeElem, reverse=True)[0]
 
 def makeorder(maker, makeramount, makeraddress, taker, takeramount, takeraddress):
-    #
     results = rpc_connection.dxMakeOrder(maker, makeramount, makeraddress, taker, takeramount, takeraddress, 'exact')
     if 'id' in results:
       return results
