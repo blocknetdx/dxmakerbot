@@ -15,7 +15,7 @@ A market making bot for Blocknet's decentralized exchange protocol, built with t
 
 
 ## Prerequisites
-1. [Latest Blocknet wallet installed](https://github.com/BlocknetDX/blocknet/releases/latest).
+1. [Latest Blocknet wallet installed](https://github.com/blocknetdx/blocknet/releases/latest).
 1. The wallet of any assets you will be trading. See list of [compatible assets](https://docs.blocknet.co/protocol/xbridge/compatibility/#supported-digital-assets).
 1. The Blocknet wallet and any other wallet you're trading out of must but fully synced and fully unlocked.
 1. The wallets used for trading must be configured. For simple setup, use [Block DX's automated configuration setup wizard](https://docs.blocknet.co/blockdx/configuration/). Having Block DX installed and opened is also useful to visually monitor the market and your open orders.
@@ -27,29 +27,65 @@ A market making bot for Blocknet's decentralized exchange protocol, built with t
 ## Installation
 
 #### Linux
+1. Open the command line terminal to enter the following commands
 1. Install Python 3: ```apt-get install python3```
-	* Or update Python 3: ```apt-get upgrade python3```
-1. Install pip:```apt-get install python3-pip```
-	* Or update pip: ```apt-get upgrade python3-pip```
-1. Navigate to your project directory.
-1. Download DX Maker Bot: ```git clone https://github.com/BlocknetDX/dxmakerbot```
-1. Navigate into *dxmakerbot*: ```cd dxmakerbot```
-1. Install required DX Maket Bot packages: ```pip3 install -r requirements.txt```
+	* Or upgrade Python 3: ```apt-get upgrade python3```
+1. Install pip (Python's package manager): ```apt-get install python3-pip```
+	* Or upgrade pip: ```apt-get upgrade python3-pip```
+1. Download DX Maker Bot
+	* Download via Git: 
+		1. Navigate to your project directory
+			* Example: ```cd ~/projects/```
+		1. Download DX Maker Bot: ```git clone https://github.com/blocknetdx/dxmakerbot```
+	* Download via Github:
+		1. Navigate to [https://github.com/blocknetdx/dxmakerbot](https://github.com/blocknetdx/dxmakerbot)
+		1. Click the green *Clone or download* button and select *Download ZIP* from the dropdown
+		1. Save the file and (if necessary) extract the contents to a folder
+1. Navigate into the *dxmakerbot* folder
+	* Example: ```cd ~/projects/dxmakerbot```
+1. Install the required DX Maket Bot packages: ```pip3 install -r requirements.txt```
+	* If that command does not work: ```pip install -r requirements.txt```
+
+#### MacOS
+1. Open Terminal to enter the following commands
+1. Install XCode: ```xcode-select --install```
+1. Install Homebrew (MacOS package manager): ```/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"```
+1. Install Python 3: ```brew install python3```
+1. Upgrade pip (Python's package manager): ```pip3 install -U pip```
+1. Download DX Maker Bot
+	* Download via Git: 
+		1. Navigate to your project directory
+			* Example: ```cd ~/Documents/projects/```
+		1. Download DX Maker Bot: ```git clone https://github.com/blocknetdx/dxmakerbot```
+	* Download via Github:
+		1. Navigate to [https://github.com/blocknetdx/dxmakerbot](https://github.com/blocknetdx/dxmakerbot)
+		1. Click the green *Clone or download* button and select *Download ZIP* from the dropdown
+		1. Save the file and (if necessary) extract the contents to a folder
+1. Navigate into the *dxmakerbot* folder
+	* Example: ```cd ~/Documents/dxmakerbot```
+1. Install the required DX Maket Bot packages: ```pip3 install -r requirements.txt```
 
 #### Windows
 1. Install Python 3:
-	1. Navigate to [https://www.python.org/downloads/](https://www.python.org/downloads/) and select *Download Python 3.7.x*.
-	1. Run the installer.
-	1. Check off *Add Python 3.7 to PATH*.
-	1. Click *Install Now*.
-1. Download DX Maker Bot:
-	1. Navigate to [https://github.com/BlocknetDX/dxmakerbot](https://github.com/BlocknetDX/dxmakerbot).
-	1. Click the green *Clone or download* button and select *Download ZIP* from the dropdown.
-	1. Save the file and extract the contents to a folder.
-1. Right-click the taskbar *Start* menu and select *Command Prompt (Admin)*.
-1. Update pip: ```py -m pip install --upgrade pip```
-1. Navigate into *dxmakerbot*: ```cd C:\Users\%USERNAME%\Downloads\dxmakerbot```
-1. Install required DX Maket Bot packages: ```pip3 install -r requirements.txt```
+	1. Navigate to [https://www.python.org/downloads/windows/](https://www.python.org/downloads/windows/) and select *Download Python 3.7.x*
+	1. Run the installer
+	1. Check off *Add Python 3.7 to PATH*
+	1. Click *Install Now*
+1. Right-click the taskbar *Start* menu and select *Command Prompt (Admin)*
+1. Upgrade pip (Python's package manager): ```py -m pip install --upgrade pip```
+1. Download DX Maker Bot
+	* Download via Git: 
+		1. Navigate to your project directory
+			* Example: ```cd ~/projects/```
+		1. Download DX Maker Bot: ```git clone https://github.com/blocknetdx/dxmakerbot```
+	* Download via Github:
+		1. Navigate to [https://github.com/blocknetdx/dxmakerbot](https://github.com/blocknetdx/dxmakerbot)
+		1. Click the green *Clone or download* button and select *Download ZIP* from the dropdown
+		1. Save the file and (if necessary) extract the contents to a folder
+1. Navigate into the *dxmakerbot* folder
+	* Example: ```cd C:\Users\%USERNAME%\Downloads\dxmakerbot```
+1. Install the required DX Maket Bot packages: ```pip3 install -r requirements.txt```
+	* If that command does not work: ```pip install -r requirements.txt```
 
 
 
@@ -120,7 +156,7 @@ Use the following command format to start the bot:
 python3 dxmakerbot.py --maker [] --taker [] --sellmin [] --sellmax [] --slidemin [] --slidemax []
 ```
 
-Flag 			| Default 		| Description
+Flag            | Default       | Description
 ----------------|---------------|------------
 --maker         | BLOCK         | Asset being sold
 --taker         | LTC           | Asset being bought
