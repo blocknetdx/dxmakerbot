@@ -20,7 +20,7 @@ parser.add_argument('--sellmin', help='min maker sell order size (default=0.001)
 parser.add_argument('--sellmax', help='max maker sell order size (default=1)', default=1)
 parser.add_argument('--slidemin', help='minimum order price multipler (default=1.000001) minimum order price = slidemin * price source quote', default=1.000001)
 parser.add_argument('--slidemax', help='maximum order price multipler (default=1.019999) maximum order price = slidemax * price source quote', default=1.019999)
-parser.add_argument('--delay', help='sleep delay, in seconds, between loops to place/cancel orders (default=3)', default=3)
+parser.add_argument('--delay', help='sleep delay, in seconds, between loops to place/cancel orders (default=3)', default=15)
 parser.add_argument('--maxloop', help='number of loops before canceling the oldest order (default=7)', default=7)
 parser.add_argument('--maxopen', help='max number of open orders (default=5)', default=5)
 parser.add_argument('--minbalance', help='min balance you want to maintain of the asset being sold (default=10)', default=10)
@@ -35,7 +35,7 @@ BOTsellmarket = args.maker.upper()
 BOTbuymarket = args.taker.upper()
 BOTslidemin = float(args.slidemin)
 BOTslidemax = float(args.slidemax)
-BOTdelay = args.delay
+BOTdelay = int(args.delay)
 
 BOTminbalance = args.minbalance
 maxloopcount = args.maxloop
@@ -61,12 +61,11 @@ elif args.cancelmarket:
     sys.exit(0)
 
 print('>>>> Start maker bot')
-time.sleep(BOTdelay) # wait for cancel orders
 print(BOTsellmarket, BOTbuymarket)
 print('>>>> Checking pricing information')
 if BOTsellmarket == BOTbuymarket:
     print('ERROR: Maker and taker asset cannot be the same')
-    sys.exit(0)
+    sys.exit(1)
 marketprice = pricebot.getpricedata(BOTsellmarket, BOTbuymarket, BOTuse)
 if marketprice == 0:
     print('#### Pricing not available')
@@ -139,8 +138,8 @@ if __name__ == '__main__':
             print('>>>> Canceled oldest: {}'.format(results))
             loopcount = 0
             ordercount = 0
-            time.sleep(BOTdelay)
-            print('>>>> Canceled oldest sleeping...')
+        print('>>>> sleeping...')
+        time.sleep(BOTdelay)
 
 
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
