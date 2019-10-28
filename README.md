@@ -151,26 +151,24 @@ customrequest3 = []
 	* CoinGecko: `--usecg`
 	* Custom pricing: `--usecustom`
 
-Use the following command to learn more about using dxmakerbot:
+### Use the following command to learn more about dxmakerbot usage
 ```
 python3 dxmakerbot.py -h
 ```
 
----------------------------------------------
-         main configuration arguments
----------------------------------------------
+### main configuration arguments
+-----------------------------
 Flag            | Description
-----------------|----------------------------
+----------------|------------
 --maker         | asset being sold (default=BLOCK)
 --taker         | asset being bought (default=LTC)
 --makeraddress  | trading address of asset being sold (default=None)
 --takeraddress  | trading address of asset being bought (default=None)
 
------------------------------------------------------
-        basic configuration arguments
------------------------------------------------------
+### basic configuration arguments
+----------------------------------
 Flag                 | Description
----------------------|------------------=------------
+---------------------|------------
 --sellmin            | min maker sell order size (default=0.001)
 --sellmax            | max maker sell order size (default=0.001)
 --slidestart         | price of first order will be equal to slidestart * price source quote(default=1.01 means +1%)
@@ -180,39 +178,34 @@ Flag                 | Description
 --balancesavenumber  | min taker balance you want to save and do not use for making orders specified by number (default=0)
 --balancesavepercent | min taker balance you want to save and do not use for making orders specified by percent of maker+taker balance (default=0.05 means 5%)
 
---------------------------------------------------
-        advanced configuration arguments
-     dynamic values, special pump/dump order
---------------------------------------------------
+### advanced configuration arguments - dynamic values, special pump/dump order
+----------------------------------
 Flag                 | Description
----------------------|----------------------------
+---------------------|------------
 --slidedynpositive   | dynamic price slide increase positive, applied if maker price goes up, range between 0 and slidedynpositive, dynamically computed by assets ratio (default=0, 0.5 means maximum at +50%% of price)
 --slidedynnegative   | dynamic price slide increase negative, applied if maker price goes down, range between 0 and slidedynnegative, dynamically computed by assets ratio (default=0, 0.1 means maximum at +10%% of price)
 --slidedynzoneignore | dynamic price slide increase ignore is zone when dynamic slide is not activated(default=0.05 means 5% of balance)
 --slidedynzonemax    | percentage when dynamic order price slide increase gonna reach maximum(default=0.9 means at 90%)
 --slidepump          | if slide pump is non zero a special order out of slidemax is set, this order will be filled when pump happen(default=0, 0.5 means order will be placed +50%% out of maximum slide)
 
------------------------------------------------------------
-      reset orders configuration arguments
------------------------------------------------------------
+### reset orders configuration arguments
+-------------------------------------------
 Flag                          | Description
-------------------------------|----------------------------
+------------------------------|------------
 --resetonpricechangepositive  | percentual price positive change(you can buy more) when reset all orders (default=0, 0.05 means reset at +5%% change)
 --resetonpricechangenegative  | percentual price negative change(you can buy less) when reset all orders (default=0, 0.05 means reset at -5% change)
 --resetafterdelay             | delay before resetting all orders in seconds (default=0 means disabled)
 --resetafterorderfinishnumber | number of orders to be finished before resetting orders (default=0 means not set)
 --resetafterorderfinishdelay  | delay after finishing last order before resetting orders in seconds (default=0 not set)
 
------------------------------------------------
-         internal configuration aguments
------------------------------------------------
+### internal configuration aguments
+-------------------------------
 Flag              | Description
-------------------|----------------------------
+------------------|------------
 --delayinternal   | sleep delay, in seconds, between loops to place/cancel orders or other internal operations(can be used ie. case of bad internet connection...) (default=9)
 --delaycheckprice | sleep delay, in seconds to check again pricing (default=180)
 
------------------------------------------
- pricing source configuration arguments
+### pricing source configuration arguments
 -----------------------------------------
 Flag        | Default       | Description
 ------------|---------------|------------
@@ -220,8 +213,7 @@ Flag        | Default       | Description
 --usecg     | *disabled*    | enable coingecko pricing
 --usecustom | *disabled*    | enable custom pricing
 
------------------------------------------
-            utility arguments
+### utility arguments
 -----------------------------------------
 Flag           | Description
 ---------------|-------------------------
