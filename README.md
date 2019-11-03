@@ -171,10 +171,10 @@ Flag                 | Description
 ---------------------|------------
 --sellstart          | size of first order or random from range sellstart and sellend (default=0.001)
 --sellend            | size of last order or random from range sellstart and sellend  (default=0.001)
---sellrandom         | orders size will be random number between sellstart and sellend, otherwise orders size starting by sellstart amount and ending with sellend amount
+--sellrandom         | orders size will be random number between sellstart and sellend, otherwise orders size sequence starting by sellstart amount and ending with sellend amount
 --slidestart         | price of first order will be equal to slidestart * price source quote(default=1.01 means +1%)
---slideend           | price of last order will be equal to slideend * price source quote(default=1.021 means +2.1%%)
---maxopen            | Max amount of orders to have open at any given time. Placing orders sequence: first placed order is at slidestart up to slideend, last order placed is slidepump if configured, is not counted into this number(default=5)
+--slideend           | price of last order will be equal to slideend * price source quote(default=1.021 means +2.1%)
+--maxopen            | Max amount of orders to have open at any given time. Placing orders sequence: first placed order is at slidestart(price slide),sellstart(amount) up to slideend(price slide),sellend(amount), last order placed is slidepump if configured, is not counted into this number (default=5)
 --reopenfinished     | reopen finished orders (default=1 means enabled)
 --balancesavenumber  | min taker balance you want to save and do not use for making orders specified by number (default=0)
 --balancesavepercent | min taker balance you want to save and do not use for making orders specified by percent of maker+taker balance (default=0.05 means 5%)
@@ -183,18 +183,18 @@ Flag                 | Description
 ----------------------------------
 Flag                 | Description
 ---------------------|------------
---slidedynpositive   | dynamic price slide increase positive, applied if maker price goes up, range between 0 and slidedynpositive, dynamically computed by assets ratio (default=0, 0.5 means maximum at +50%% of price)
---slidedynnegative   | dynamic price slide increase negative, applied if maker price goes down, range between 0 and slidedynnegative, dynamically computed by assets ratio (default=0, 0.1 means maximum at +10%% of price)
+--slidedynpositive   | dynamic price slide increase positive, applied if maker price goes up, range between 0 and slidedynpositive, dynamically computed by assets ratio (default=0, 0.5 means maximum at +50% of price)
+--slidedynnegative   | dynamic price slide increase negative, applied if maker price goes down, range between 0 and slidedynnegative, dynamically computed by assets ratio (default=0, 0.1 means maximum at +10% of price)
 --slidedynzoneignore | dynamic price slide increase ignore is zone when dynamic slide is not activated(default=0.05 means 5% of balance)
 --slidedynzonemax    | percentage when dynamic order price slide increase gonna reach maximum(default=0.9 means at 90%)
---slidepump          | if slide pump is non zero a special order out of slidemax is set, this order will be filled when pump happen(default=0, 0.5 means order will be placed +50%% out of maximum slide)
+--slidepump          | if slide pump is non zero a special order out of slidemax is set, this order will be filled when pump happen(default=0, 0.5 means order will be placed +50% out of maximum slide)
 --pumpamount         | pump order size, otherwise sellend is used(default=--sellend)
 
 ### reset orders configuration arguments
 -------------------------------------------
 Flag                          | Description
 ------------------------------|------------
---resetonpricechangepositive  | percentual price positive change(you can buy more) when reset all orders (default=0, 0.05 means reset at +5%% change)
+--resetonpricechangepositive  | percentual price positive change(you can buy more) when reset all orders (default=0, 0.05 means reset at +5% change)
 --resetonpricechangenegative  | percentual price negative change(you can buy less) when reset all orders (default=0, 0.05 means reset at -5% change)
 --resetafterdelay             | delay before resetting all orders in seconds (default=0 means disabled)
 --resetafterorderfinishnumber | number of orders to be finished before resetting orders (default=0 means not set)
