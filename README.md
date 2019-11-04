@@ -225,42 +225,58 @@ Flag           | Description
 `*` = optional
 
 ### Example situation no. 1 and corresponding command:
-Let say, user is running Blocknet wallet with address blck0123456789blck and all his staked and masternode rewards coins go to this address
-Let say, user want to automatically sell all staked Blocknet coins for Litecoin which wallet is using address lite0123456789lite
-So user uses dxmakerbor config like this:
+- Let say, user is running Blocknet wallet with address blck0123456789blck and all his staked and masternode rewards coins go to this address.
+- Let say, user want to automatically sell all staked Blocknet coins for Litecoin which wallet is using address lite0123456789lite.
+- So user uses dxmakerbor config like this:
+```
 --maker BLOCK --makeraddress blck0123456789blck --taker LTC --takeraddress lite0123456789lite
+```
 
-Let say, most effective to sell Blocknet is at minimum amount of 10 block because of high fees on Litecoin.
-So bot needs to be configured to open orders of minimum at 10 Blocknet coins.
-Let say, user know that time to time blocknet price goes about 22% up and down and he wants to cover whole pricing by using staggered orders.
-Let say, user also wants to staggered orders been in valley mode, means placing small orders with 10BLOCK nearest to center-price at +3% up to last order at 100BLOCK at +22%
-Let say, user wants always place higher orders first for the case of insufficient funds
-So used uses dxmakerbot config like this:
+- Let say, most effective to sell Blocknet is at minimum amount of 10 block because of high fees on Litecoin. So bot needs to be configured to open orders of minimum at 10 Blocknet coins.
+- Let say, user know that time to time blocknet price goes about 22% up and down and he wants to cover whole pricing by using staggered orders.
+- Let say, user also wants to staggered orders been in valley mode, means placing small orders with 10BLOCK nearest to center-price at +3% up to last order at 100BLOCK at +22%
+- Let say, user wants always place higher orders first for the case of insufficient funds.
+- So used uses dxmakerbot config like this:
+```
 --sellstart 100 --sellend 10 --slidestart 1.22 --slideend 1.03
+```
 
-Let say, user wants to have opened maximum 5 orders between that 22% and 3%
+- Let say, user wants to have opened maximum 5 orders between that 22% and 3%
+```
 --maxopen 5
+```
 
-Let say, user know that price time to time goes to pump at +40% so he wants to cover that case by one order at +38%
+- Let say, user know that price time to time goes to pump at +40% so he wants to cover that case by one order at +38%
+```
 --slidepump 0.38
+```
 
-Let say, user rather wait for 2 staggered orders to be finished than reopen low price one order
-Let say, but if not multiple orders will finish at time of 10 minutes, all orders goes to reset
+- Let say, user rather wait for 2 staggered orders to be finished than reopen low price one order
+- Let say, but if not multiple orders will finish at time of 10 minutes, all orders goes to reset
+```
 --reopenfinished 0 --resetafterorderfinishnumber 2 --resetafterorderfinishdelay 600
+```
 
-Let say, user always wants to have some little 2 blocknets save on his wallet
---balancesavenumber 2
---balancesavepercent 0
+- Let say, user always wants to have some little 2 blocknets save on his wallet
+```
+--balancesavenumber 2 --balancesavepercent 0
+```
 
-Let say, user always wants to check of price changes and reset all orders at +3% of price change
-But if price goes down, he knows its only correction, and price downtrend must be followed by at least 8% dump.
+- Let say, user always wants to check of price changes and reset all orders at +3% of price change.
+- But if price goes down, he knows its only correction, and price downtrend must be followed by at least 8% dump.
+```
 --resetonpricechangepositive 0.03 --resetonpricechangenegative 0.08
+```
 
-Let say, user is running multiple bots and have low internet connection, so he decide to give all internal operation time 15 seconds
+- Let say, user is running multiple bots and have low internet connection, so he decide to give all internal operation time 15 seconds
+```
 --delayinternal 15
+```
 
-Let say, rechecking price source very often will cause client dxmakerbot been banned for a few minutes, so user decide to check price only once per 2 minutes
--delaycheckprice 120
+- Let say, rechecking price source very often will cause client dxmakerbot been banned for a few minutes, so user decide to check price only once per 2 minutes
+```
+--delaycheckprice 120
+```
 
 Corresponding command for example situation no. 1:
 ```
