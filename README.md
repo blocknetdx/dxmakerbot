@@ -151,32 +151,134 @@ customrequest3 = []
 	* CoinGecko: `--usecg`
 	* Custom pricing: `--usecustom`
 
-Use the following command format to start the bot:
+### Use the following command to learn more about dxmakerbot usage
 ```
-python3 dxmakerbot.py --maker [] --taker [] --sellmin [] --sellmax [] --slidemin [] --slidemax []
+python3 dxmakerbot.py -h
 ```
 
-Flag            | Default       | Description
-----------------|---------------|------------
---maker         | BLOCK         | Asset being sold
---taker         | LTC           | Asset being bought
---sellmin       | 0.001         | Min maker sell order size
---sellmax       | 1             | Max maker sell order size
---slidemin      | 1.000001      | Min order price multiplier: Min order price = slidemin * price source quote
---slidemax      | 1.019999      | Max order price multiplier: Min order price = slidemax * price source quote
---delay         | 3             | Sleep delay between loops to place/cancel orders (seconds)
---maxloop       | 7             | Number of loops before canceling the oldest order
---maxopen       | 5             | Max amount of orders to have open at any given time
---minbalance    | 10            | Min balance you want to maintain of the asset being sold
---usecb*        | *disabled*    | Use CryptoBridge prices (both assets must be listed on CryptoBridge)
---usecg*        | *disabled*    | Use CoinGecko prices (both assets must be listed on CoinGecko)
---usecustom*    | *disabled*    | Use custom price sources from *utils/dxsettings.py*
---cancelall*    |               | Cancel all orders and exit program
---cancelmarket* |               | Cancel all orders in a given market
+### main configuration arguments
+-----------------------------
+Flag            | Description
+----------------|------------
+--maker         | asset being sold (default=BLOCK)
+--taker         | asset being bought (default=LTC)
+--makeraddress  | trading address of asset being sold (default=None)
+--takeraddress  | trading address of asset being bought (default=None)
+
+### basic configuration arguments
+----------------------------------
+Flag                 | Description
+---------------------|------------
+--sellstart          | size of first order or random from range sellstart and sellend (default=0.001)
+--sellend            | size of last order or random from range sellstart and sellend  (default=0.001)
+--sellrandom         | orders size will be random number between sellstart and sellend, otherwise orders size sequence starting by sellstart amount and ending with sellend amount
+--slidestart         | price of first order will be equal to slidestart * price source quote(default=1.01 means +1%)
+--slideend           | price of last order will be equal to slideend * price source quote(default=1.021 means +2.1%)
+--maxopen            | Max amount of orders to have open at any given time. Placing orders sequence: first placed order is at slidestart(price slide),sellstart(amount) up to slideend(price slide),sellend(amount), last order placed is slidepump if configured, is not counted into this number (default=5)
+--reopenfinished     | reopen finished orders (default=1 means enabled)
+--balancesavenumber  | min taker balance you want to save and do not use for making orders specified by number (default=0)
+--balancesavepercent | min taker balance you want to save and do not use for making orders specified by percent of maker+taker balance (default=0.05 means 5%)
+
+### advanced configuration arguments - dynamic values, special pump/dump order
+----------------------------------
+Flag                 | Description
+---------------------|------------
+--slidedynpositive   | dynamic price slide increase positive, applied if maker price goes up, range between 0 and slidedynpositive, dynamically computed by assets ratio (default=0, 0.5 means maximum at +50% of price)
+--slidedynnegative   | dynamic price slide increase negative, applied if maker price goes down, range between 0 and slidedynnegative, dynamically computed by assets ratio (default=0, 0.1 means maximum at +10% of price)
+--slidedynzoneignore | dynamic price slide increase ignore is zone when dynamic slide is not activated(default=0.05 means 5% of balance)
+--slidedynzonemax    | percentage when dynamic order price slide increase gonna reach maximum(default=0.9 means at 90%)
+--slidepump          | if slide pump is non zero a special order out of slidemax is set, this order will be filled when pump happen(default=0, 0.5 means order will be placed +50% out of maximum slide)
+--pumpamount         | pump order size, otherwise sellend is used(default=--sellend)
+
+### reset orders configuration arguments
+-------------------------------------------
+Flag                          | Description
+------------------------------|------------
+--resetonpricechangepositive  | percentual price positive change(you can buy more) when reset all orders (default=0, 0.05 means reset at +5% change)
+--resetonpricechangenegative  | percentual price negative change(you can buy less) when reset all orders (default=0, 0.05 means reset at -5% change)
+--resetafterdelay             | delay before resetting all orders in seconds (default=0 means disabled)
+--resetafterorderfinishnumber | number of orders to be finished before resetting orders (default=0 means not set)
+--resetafterorderfinishdelay  | delay after finishing last order before resetting orders in seconds (default=0 not set)
+
+### internal configuration aguments
+-------------------------------
+Flag              | Description
+------------------|------------
+--delayinternal   | sleep delay, in seconds, between loops to place/cancel orders or other internal operations(can be used ie. case of bad internet connection...) (default=9)
+--delaycheckprice | sleep delay, in seconds to check again pricing (default=180)
+
+### pricing source configuration arguments
+-----------------------------------------
+Flag        | Default       | Description
+------------|---------------|------------
+--usecb     | *disabled*    | enable cryptobridge pricing
+--usecg     | *disabled*    | enable coingecko pricing
+--usecustom | *disabled*    | enable custom pricing
+
+### utility arguments
+-----------------------------------------
+Flag           | Description
+---------------|-------------------------
+--cancelall    | Cancel all orders and exit program
+--cancelmarket | Cancel all orders in a given market
 
 `*` = optional
 
-Example command:
+### Example situation no. 1 and corresponding command:
+- Let say, user is running Blocknet wallet with address blck0123456789blck and all his staked and masternode rewards coins go to this address.
+- Let say, user want to automatically sell all staked Blocknet coins for Litecoin which wallet is using address lite0123456789lite.
+- So user uses dxmakerbor config like this:
 ```
-python3 dxmakerbot.py --maker SYS --taker LTC --sellmin 5 --sellmax 115 --slidemin 1.00111 --slidemax 1.1111 --usecustom
+--maker BLOCK --makeraddress blck0123456789blck --taker LTC --takeraddress lite0123456789lite
+```
+
+- Let say, most effective to sell Blocknet is at minimum amount of 10 block because of high fees on Litecoin. So bot needs to be configured to open orders of minimum at 10 Blocknet coins.
+- Let say, user know that time to time blocknet price goes about 22% up and down and he wants to cover whole pricing by using staggered orders.
+- Let say, user also wants to staggered orders been in valley mode, means placing small orders with 10BLOCK nearest to center-price at +3% up to last order at 100BLOCK at +22%
+- Let say, user wants always place higher orders first for the case of insufficient funds.
+- So used uses dxmakerbot config like this:
+```
+--sellstart 100 --sellend 10 --slidestart 1.22 --slideend 1.03
+```
+
+- Let say, user wants to have opened maximum 5 orders between that 22% and 3%
+```
+--maxopen 5
+```
+
+- Let say, user know that price time to time goes to pump at +40% so he wants to cover that case by one order at +38%
+```
+--slidepump 0.38
+```
+
+- Let say, user rather wait for 2 staggered orders to be finished than reopen low price one order
+- Let say, but if not multiple orders will finish at time of 10 minutes, all orders goes to reset
+```
+--reopenfinished 0 --resetafterorderfinishnumber 2 --resetafterorderfinishdelay 600
+```
+
+- Let say, user always wants to have some little 2 blocknets save on his wallet
+```
+--balancesavenumber 2 --balancesavepercent 0
+```
+
+- Let say, user always wants to check of price changes and reset all orders at +3% of price change.
+- But if price goes down, he knows its only correction, and price downtrend must be followed by at least 8% dump.
+```
+--resetonpricechangepositive 0.03 --resetonpricechangenegative 0.08
+```
+
+- Let say, user is running multiple bots and have low internet connection, so he decide to give all internal operation time 15 seconds
+```
+--delayinternal 15
+```
+
+- Let say, rechecking price source very often will cause client dxmakerbot been banned for a few minutes, so user decide to check price only once per 2 minutes
+```
+--delaycheckprice 120
+```
+
+Corresponding command for example situation no. 1:
+```
+python3 dxmakerbot.py --maker BLOCK --makeraddress blck0123456789blck --taker LTC --takeraddress lite0123456789lite --sellstart 100 --sellend 10 --slidestart 1.22 --slideend 1.03 --maxopen 5 --reopenfinished 0 --balancesavenumber 2 --balancesavepercent 0 --slidedynpositive 0.0 --slidedynnegative 0.0 --slidedynzoneignore 0.0 --slidedynzonemax 0.0 --slidepump 0.38 --resetonpricechangepositive 0.03 --resetonpricechangenegative 0.08 --resetafterdelay 0 --resetafterorderfinishnumber 2 --resetafterorderfinishdelay 600 --delayinternal 15 --delaycheckprice 120
 ```

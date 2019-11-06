@@ -61,6 +61,11 @@ def cancelallordersbymarket(maker, taker):
       print (results)
   return
 
+def getmyordersbymarket(maker, taker):
+    # returns open orders by market
+    myorders = rpc_connection.dxGetMyOrders()
+    return [zz for zz in myorders if (zz['maker'] == maker) and (zz['taker'] == taker)]
+
 def getopenordersbymarket(maker, taker):
     # returns open orders by market
     myorders = rpc_connection.dxGetMyOrders()
