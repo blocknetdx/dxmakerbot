@@ -104,9 +104,9 @@ class AuthServiceProxy(object):
 
         if connection:
             # Callables re-use the connection of the original proxy
-            # self.__conn = connection TODO: resolve issue w/ connection w/ blocknet wallet
-            self.__conn = httplib.HTTPConnection(self.__url.hostname, port,
-                                                 timeout=timeout)
+            self.__conn = connection #fixed in v4.x codebase
+            #self.__conn = httplib.HTTPConnection(self.__url.hostname, port,
+            #                                     timeout=timeout)
         elif self.__url.scheme == 'https':
             self.__conn = httplib.HTTPSConnection(self.__url.hostname, port,
                                                   timeout=timeout)
