@@ -61,6 +61,11 @@ def cancelallordersbymarket(maker, taker):
       print (results)
   return
 
+def getallmyordersbymarket(maker, taker):
+    # returns open orders by market
+    myorders = rpc_connection.dxGetMyOrders()
+    return [zz for zz in myorders if (zz['maker'] == maker) and (zz['taker'] == taker)]
+
 def getopenordersbymarket(maker, taker):
     # returns open orders by market
     myorders = rpc_connection.dxGetMyOrders()
@@ -108,6 +113,10 @@ def makeorder(maker, makeramount, makeraddress, taker, takeramount, takeraddress
 def takeorder(id, fromaddr, toaddr):
     results = rpc_connection.dxTakeOrder(id, fromaddr, toaddr)
     return results
+
+# return float balance of specific token or return 0 of not exist
+def get_token_balance(balances, token_name):
+    return float(balances.get(token_name, 0))
 
 def showorders():
     print ('### Getting balances >>>')
