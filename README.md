@@ -93,7 +93,7 @@ A market making bot for Blocknet's decentralized exchange protocol, built with t
 1. Open `dxmakerbot/utils/dxsettings.py`.
 1. Edit the trading addresses to match the wallet addresses containing funds split into multiple UTXOs.
 	* Make sure funds are in legacy addresses (Eg. LTC funds should be in a "L" address).
-1. Edit `rpcuser =`, `rpcpassword =`, and `rpcport =` to the same values used in the Blocknet client's `blocknetdx.conf` file.
+1. Edit `rpcuser =`, `rpcpassword =`, and `rpcport =` to the same values used in the Blocknet client's `blocknet.conf` file.
 1. Save and close the file. 
 
 Example `dxsettings.py` file:
